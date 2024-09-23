@@ -629,29 +629,30 @@
     }
 
     function checkPassword(password) {
-      try {
-        // Attempt to decrypt the encrypted API key using the provided password
-        const decrypted = CryptoJS.AES.decrypt(ENCRYPTED_API_KEY, password).toString(CryptoJS.enc.Utf8);
+  try {
+    // Attempt to decrypt the encrypted API key using the provided password
+    const decrypted = CryptoJS.AES.decrypt(ENCRYPTED_API_KEY, password).toString(CryptoJS.enc.Utf8);
 
-        // Check if the decrypted key starts with the expected prefix "sk-or-v1-"
-        if (decrypted.startsWith("sk-or-v1-")) {
-          isPasswordEntered = true;
-          decryptedApiKey = decrypted;
-          addMessage('Password correct. You can now start the conversation.');
-          const systemPrompt = "You are a chill AI, you don't responde with long messages, you are cool";
-          conversationHistory.push({
-            role: "system",
-            content: systemPrompt
-        } else {
-          addMessage('Incorrect password. Please try again.');
-        }
-      } catch (error) {
-        // If an error occurs during decryption (e.g., wrong password), handle it gracefully
-        addMessage('Incorrect password or decryption failed. Please try again.');
-      }
-
-      userInput.value = '';  // Clear the input field
+    // Check if the decrypted key starts with the expected prefix "sk-or-v1-"
+    if (decrypted.startsWith("sk-or-v1-")) {
+      isPasswordEntered = true;
+      decryptedApiKey = decrypted;
+      addMessage('Password correct. You can now start the conversation.');
+      const systemPrompt = "You are a chill AI, you don't respond with long messages, you are cool";
+      conversationHistory.push({
+        role: "system",
+        content: systemPrompt
+      });
+    } else {
+      addMessage('Incorrect password. Please try again.');
     }
+  } catch (error) {
+    // If an error occurs during decryption (e.g., wrong password), handle it gracefully
+    addMessage('Incorrect password or decryption failed. Please try again.');
+  }
+
+  userInput.value = '';  // Clear the input field
+}
 
 
     restartButton.addEventListener('click', restartConversation);
