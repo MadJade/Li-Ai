@@ -638,6 +638,10 @@
           isPasswordEntered = true;
           decryptedApiKey = decrypted;
           addMessage('Password correct. You can now start the conversation.');
+          const systemPrompt = "You are a chill AI, you don't responde with long messages, you are cool";
+          conversationHistory.push({
+            role: "system",
+            content: systemPrompt
         } else {
           addMessage('Incorrect password. Please try again.');
         }
