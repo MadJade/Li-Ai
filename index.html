@@ -638,7 +638,7 @@
       isPasswordEntered = true;
       decryptedApiKey = decrypted;
       addMessage('Password correct. You can now start the conversation.');
-      const systemPrompt = "You are a chill AI, you don't respond with long messages, you are cool";
+      const systemPrompt = "You don't respond with long messages, you only do if needed.";
       conversationHistory.push({
         role: "system",
         content: systemPrompt
