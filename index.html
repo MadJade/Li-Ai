@@ -1,104 +1,17 @@
-<html w-tid="0">
+<!DOCTYPE html>
+<html>
 
-<head w-tid="1">
+<head>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="My App"> 
+  <meta name="apple-mobile-web-app-title" content="My App">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <!-- Add theme-color for Android and Safari -->
+  <meta name="theme-color" content="#1a1a2e">
+  <link rel="icon" href="https://i.imgur.com/5eikbcV.png" type="image/png">
+  <title>Li-Ai</title>
   <style>
-    html {
-      min-height: 100%
-    }
-
-    .ctxmenu {
-      position: fixed;
-      border: 1px solid #999;
-      padding: 2px 0;
-      box-shadow: #aaa 3px 3px 3px;
-      background: #fff;
-      margin: 0;
-      z-index: 9999;
-      overflow-y: auto;
-      font: 15px Verdana, sans-serif;
-      box-sizing: border-box
-    }
-
-    .ctxmenu li {
-      margin: 1px 0;
-      display: block;
-      position: relative;
-      user-select: none
-    }
-
-    .ctxmenu li.heading {
-      font-weight: bold;
-      margin-left: -5px
-    }
-
-    .ctxmenu li span {
-      display: block;
-      padding: 2px 20px;
-      cursor: default
-    }
-
-    .ctxmenu li a {
-      color: inherit;
-      text-decoration: none
-    }
-
-    .ctxmenu li.icon {
-      padding-left: 15px
-    }
-
-    .ctxmenu img.icon {
-      position: absolute;
-      width: 18px;
-      left: 10px;
-      top: 2px
-    }
-
-    .ctxmenu li.disabled {
-      color: #ccc
-    }
-
-    .ctxmenu li.divider {
-      border-bottom: 1px solid #aaa;
-      margin: 5px 0
-    }
-
-    .ctxmenu li.interactive:hover {
-      background: rgba(0, 0, 0, .1)
-    }
-
-    .ctxmenu li.submenu::after {
-      content: "";
-      position: absolute;
-      display: block;
-      top: 0;
-      bottom: 0;
-      right: .4em;
-      margin: auto .1rem auto auto;
-      border-right: 1px solid #000;
-      border-top: 1px solid #000;
-      transform: rotate(45deg);
-      width: .3rem;
-      height: .3rem
-    }
-
-    .ctxmenu li.submenu.disabled::after {
-      border-color: #ccc
-    }
-  </style>
-  <base href="" simulated-href="/" w-tid="2">
-  <link rel="stylesheet" href="/fonts.css?v=41af5fbe8025dabf8b0739385b75e80d69fa8cfd">
-  <link rel="stylesheet" href="/ctxmenu.css?v=41af5fbe8025dabf8b0739385b75e80d69fa8cfd">
-
-
-
-  <meta charset="UTF-8" w-tid="3">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" w-tid="4">
-  <link rel="icon" href="https://i.imgur.com/5eikbcV.png" type="image/png" w-tid="5">
-  <title w-tid="6">Li-Ai</title>
-  <style w-tid="7">
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Open+Sans:wght@400;600&display=swap');
 
     :root {
@@ -112,6 +25,10 @@
       --input-background: rgba(255, 255, 255, 0.1);
       --button-color: #ff6b6b;
       --button-hover-color: #ff8787;
+      --safe-area-inset-top: env(safe-area-inset-top);
+      --safe-area-inset-bottom: env(safe-area-inset-bottom);
+      --safe-area-inset-left: env(safe-area-inset-left);
+      --safe-area-inset-right: env(safe-area-inset-right);
     }
 
     * {
@@ -124,8 +41,11 @@
       font-family: 'Open Sans', sans-serif;
       background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
       color: var(--text-color);
+      display: flex;
       justify-content: center;
+      align-items: center;
       min-height: 100vh;
+      /* Handle safe area for iPhones with notch */
     }
 
     .chat-container {
@@ -134,6 +54,10 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      width: 100%;
+      max-width: 800px;
+      height: 90vh;
+      border-radius: 10px;
     }
 
     .chat-header {
@@ -153,25 +77,28 @@
       flex-grow: 1;
     }
 
-    .restart-button {
-      background-color: var(--button-color);
-      color: var(--text-color);
-      border: none;
-      padding: 8px 16px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 0.8em;
-      transition: all 0.3s ease;
+    .header-buttons {
+      display: flex;
+      gap: 10px;
     }
 
-    .restart-button:hover {
-      background-color: var(--button-hover-color);
-      transform: scale(1.05);
+    .header-button {
+      background: none;
+      border: none;
+      color: var(--text-color);
+      cursor: pointer;
+      padding: 5px;
+      transition: color 0.3s ease;
+      display: flex;
+      align-items: center;
+    }
+
+    .header-button:hover {
+      color: var(--button-hover-color);
     }
 
     .chat-messages {
       flex-grow: 1;
-      height: 100vh;
       overflow-y: auto;
       padding: 20px;
       display: flex;
@@ -219,6 +146,9 @@
       padding: 20px;
       background-color: var(--chat-background);
       border-top: 1px solid rgba(255, 255, 255, 0.1);
+      align-items: center;
+      /* Handle safe area for iPhones with notch */
+      padding-bottom: calc(20px + var(--safe-area-inset-bottom));
     }
 
     #user-input {
@@ -380,43 +310,77 @@
       }
     }
   </style>
+  <base href="" simulated-href="/" />
+  <link rel="stylesheet" href="/fonts.css?v=41af5fbe8025dabf8b0739385b75e80d69fa8cfd">
+  <link rel="stylesheet" href="/ctxmenu.css?v=41af5fbe8025dabf8b0739385b75e80d69fa8cfd">
 </head>
 
-<body w-tid="8">
-  <div class="chat-container" w-tid="9">
-    <div class="chat-header" w-tid="10">
-      <div class="chat-title" w-tid="11">ChatBot</div>
-      <button class="restart-button" id="restart-button" w-tid="12"><svg width="24" height="24" viewBox="0 0 24 24"
-          fill="none" xmlns="http://www.w3.org/2000/svg" w-tid="13" class="">
-          <path
-            d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
-            fill="currentColor" w-tid="14"></path>
-        </svg></button>
+<body>
+  <div class="chat-container">
+    <div class="chat-header">
+      <div class="chat-title">ChatBot</div>
+      <div class="header-buttons">
+        <button class="header-button" id="change-prompt-button" title="Change System Prompt">
+          <!-- Settings Icon SVG -->
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M12 15.5C13.933 15.5 15.5 13.933 15.5 12C15.5 10.067 13.933 8.5 12 8.5C10.067 8.5 8.5 10.067 8.5 12C8.5 13.933 10.067 15.5 12 15.5Z"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            <path
+              d="M19.4 15A1.65 1.65 0 0 0 20 12.5V11.5A1.65 1.65 0 0 0 19.4 9M4.6 9A1.65 1.65 0 0 1 4 11.5V12.5A1.65 1.65 0 0 1 4.6 15M12 8V6M12 18V16M16.24 7.76L17.66 6.34M6.34 17.66L7.76 16.24M16.24 16.24L17.66 17.66M6.34 6.34L7.76 7.76"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+        </button>
+        <button class="header-button" id="restart-button" title="Restart Conversation">
+          <!-- Trash Icon SVG -->
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M3 6H5H21"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            <path
+              d="M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            <path
+              d="M10 11V17"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            <path
+              d="M14 11V17"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+        </button>
+      </div>
     </div>
-    <div class="chat-messages" id="chat-messages" w-tid="15">
+    <div class="chat-messages" id="chat-messages">
+      <!-- Messages will appear here -->
     </div>
-    <div class="chat-input" w-tid="16">
-      <input type="text" id="user-input" placeholder="Type your message..." w-tid="17">
-      <button class="input-button" id="image-button" w-tid="18">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" w-tid="19">
+    <div class="chat-input">
+      <input type="text" id="user-input" placeholder="Type your message..." />
+      <button class="input-button" id="image-button" title="Upload Image">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+          xmlns="http://www.w3.org/2000/svg">
           <path
             d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"
-            fill="currentColor" w-tid="20"></path>
+            fill="currentColor"></path>
         </svg>
       </button>
-      <input type="file" id="image-upload" accept="image/*" w-tid="21">
-      <img id="image-preview" src="#" alt="Image preview" w-tid="22" data-image_id="0" class="websim-loading">
-      <button class="input-button" id="send-button" w-tid="23">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" w-tid="24">
-          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" fill="currentColor" w-tid="25"></path>
+      <input type="file" id="image-upload" accept="image/*">
+      <img id="image-preview" src="#" alt="Image preview" data-image_id="0" class="websim-loading">
+      <button class="input-button" id="send-button" title="Send Message">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+          xmlns="http://www.w3.org/2000/svg">
+          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" fill="currentColor"></path>
         </svg>
       </button>
     </div>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js" w-tid="26"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js" w-tid="27"></script>
-  <script w-tid="28">
+  <!-- Include Axios and CryptoJS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
+  <script>
     const API_URL = "https://openrouter.ai/api/v1/chat/completions";
     const ENCRYPTED_API_KEY = "U2FsdGVkX19yvWTKX7phTb187mjVYLIATMuj/vPJ3kJ0lx52lMA4ugj9QwfBprbd5kjxSUnI+v6UaWD4gV5MUh7w2u+Kw6JOG+4gwV05rDWd5/19rJa9FYa/wHBoENkh";
 
@@ -427,11 +391,35 @@
     const imageUpload = document.getElementById('image-upload');
     const imagePreview = document.getElementById('image-preview');
     const restartButton = document.getElementById('restart-button');
+    const changePromptButton = document.getElementById('change-prompt-button');
 
     let uploadedImageBase64 = null;
     let conversationHistory = [];
     let isPasswordEntered = false;
     let decryptedApiKey = '';
+    let systemPrompt = "You don't respond with long messages, you only do if needed.";
+
+    // Load stored API key and system prompt from localStorage
+    window.onload = () => {
+      const storedApiKey = localStorage.getItem('decryptedApiKey');
+      const storedSystemPrompt = localStorage.getItem('systemPrompt');
+      if (storedApiKey) {
+        decryptedApiKey = storedApiKey;
+        isPasswordEntered = true;
+        addMessage('Welcome back! You can continue your conversation.');
+        if (storedSystemPrompt) {
+          systemPrompt = storedSystemPrompt;
+        }
+        const systemMsg = { role: "system", content: systemPrompt };
+        conversationHistory.push(systemMsg);
+      } else {
+        addMessage('Please enter the password to start the conversation.');
+      }
+
+      if (storedSystemPrompt && !isPasswordEntered) {
+        systemPrompt = storedSystemPrompt;
+      }
+    };
 
     function escapeHtml(unsafe) {
       return unsafe
@@ -586,6 +574,11 @@
     }
 
     async function handleStreamingResponse(response) {
+      if (!response.ok) {
+        addMessage('Error: Unable to fetch response from the server.');
+        return;
+      }
+
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let botReply = '';
@@ -624,36 +617,56 @@
     function restartConversation() {
       conversationHistory = [];
       chatMessages.innerHTML = '';
-      isPasswordEntered = false;
-      addMessage('Please enter the password to start the conversation.');
+      addMessage('Conversation has been restarted.');
+      // Re-add the system prompt if already entered
+      if (isPasswordEntered) {
+        addMessage('You can continue your conversation.');
+        const systemMsg = { role: "system", content: systemPrompt };
+        conversationHistory.push(systemMsg);
+      } else {
+        addMessage('Please enter the password to start the conversation.');
+      }
     }
 
     function checkPassword(password) {
-  try {
-    // Attempt to decrypt the encrypted API key using the provided password
-    const decrypted = CryptoJS.AES.decrypt(ENCRYPTED_API_KEY, password).toString(CryptoJS.enc.Utf8);
+      try {
+        // Attempt to decrypt the encrypted API key using the provided password
+        const decrypted = CryptoJS.AES.decrypt(ENCRYPTED_API_KEY, password).toString(CryptoJS.enc.Utf8);
 
-    // Check if the decrypted key starts with the expected prefix "sk-or-v1-"
-    if (decrypted.startsWith("sk-or-v1-")) {
-      isPasswordEntered = true;
-      decryptedApiKey = decrypted;
-      addMessage('Password correct. You can now start the conversation.');
-      const systemPrompt = "You don't respond with long messages, you only do if needed.";
-      conversationHistory.push({
-        role: "system",
-        content: systemPrompt
-      });
-    } else {
-      addMessage('Incorrect password. Please try again.');
+        // Check if the decrypted key starts with the expected prefix "sk-or-v1-"
+        if (decrypted.startsWith("sk-or-v1-")) {
+          isPasswordEntered = true;
+          decryptedApiKey = decrypted;
+          localStorage.setItem('decryptedApiKey', decryptedApiKey); // Store API key securely
+          addMessage('Password correct. You can now start the conversation.');
+          const systemMsg = { role: "system", content: systemPrompt };
+          conversationHistory.push(systemMsg);
+        } else {
+          addMessage('Incorrect password. Please try again.');
+        }
+      } catch (error) {
+        // If an error occurs during decryption (e.g., wrong password), handle it gracefully
+        addMessage('Incorrect password or decryption failed. Please try again.');
+      }
+
+      userInput.value = '';  // Clear the input field
     }
-  } catch (error) {
-    // If an error occurs during decryption (e.g., wrong password), handle it gracefully
-    addMessage('Incorrect password or decryption failed. Please try again.');
-  }
 
-  userInput.value = '';  // Clear the input field
-}
-
+    function changeSystemPrompt() {
+      const newPrompt = prompt("Enter the new system prompt:", systemPrompt);
+      if (newPrompt !== null && newPrompt.trim() !== "") {
+        systemPrompt = newPrompt.trim();
+        localStorage.setItem('systemPrompt', systemPrompt);
+        // Update the system prompt in conversation history
+        const systemIndex = conversationHistory.findIndex(msg => msg.role === "system");
+        if (systemIndex !== -1) {
+          conversationHistory[systemIndex].content = systemPrompt;
+        } else {
+          conversationHistory.push({ role: "system", content: systemPrompt });
+        }
+        addMessage('System prompt has been updated.');
+      }
+    }
 
     restartButton.addEventListener('click', restartConversation);
     sendButton.addEventListener('click', sendMessage);
@@ -669,9 +682,14 @@
 
     imageUpload.addEventListener('change', handleImageUpload);
 
-    addMessage('Please enter the password to start the conversation.');
-  </script>
+    changePromptButton.addEventListener('click', changeSystemPrompt);
 
+    // Initialize conversation
+    if (isPasswordEntered) {
+      const systemMsg = { role: "system", content: systemPrompt };
+      conversationHistory.push(systemMsg);
+    }
+  </script>
 </body>
 
 </html>
